@@ -31,13 +31,13 @@ class LoginServer:
 
             data = json.loads(data_json)
 
-            print data
+            print data[1]
 
             if len(data[0]):
 
                 answer = raw_input('[%s]>>:' % data[0])
 
-                client_socket.sendall(answer)
+                client_socks.sendall(answer)
 
             else:
 
