@@ -2,6 +2,7 @@
 
 import socket
 import sys
+import json
 
 class LoginServer:
     
@@ -23,13 +24,26 @@ class LoginServer:
         client_socks.sendall(HELLO)
         
         while True:
-            
-            data = client_socks.recv(4096)
+
+            data_json = client_socks.recv(4096)
+
+            # date_json like ['Show', really_data]
+
+            data = json.loads(data_json)
+
             print data
-            
-            answer = raw_input('>>:')
-            
-            client_socks.sendall(answer)
+
+            if len(data[0]):
+
+                answer = raw_input('[%s]>>:' % data[0])
+
+                client_socket.sendall(answer)
+
+            else:
+
+                answer = raw_input('[Normal Mod]>>:')
+
+                client_socks.sendall(answer)
 
 def main():
     
