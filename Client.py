@@ -3,6 +3,7 @@
 import socket
 import sys
 import json
+from multiprocessing import Process
 
 class LoginServer:
 
@@ -10,9 +11,11 @@ class LoginServer:
 
         self.HOST_IP = host_ip
         self.PORT= port
-        self.TIMEOUT = 20
+        self.TIMEOUT = 200
 
-    def login(self):
+
+
+    def send_recv(self):
 
         client_socks = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -38,19 +41,33 @@ class LoginServer:
 
                 answer = raw_input('[%s]>>:' % data[0])
 
-                client_socks.sendall(answer)
+                send_process = Process(target = sendp, args = (client_socks, answer))
+
+                send_process.daemon = True
+
+                send_process.start()
 
             else:
 
                 answer = raw_input('[Normal Mod]>>:')
 
-                client_socks.sendall(answer)
+                send_process = Process(target = sendp, args = (client_socks, answer))
+
+                send_process.daemon = True
+
+                send_process.start()
+
+
+def sendp(client_socks, answer):
+
+    client_socks.sendall(answer)
+
 
 def main():
     
     init = LoginServer('127.0.0.1', 8001)
 
-    init.login()
+    init.send_recv()
 
 if __name__ == "__main__":
 
